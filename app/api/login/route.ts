@@ -6,7 +6,7 @@ type RequestBody = {
   username: string;
   password: string;
 };
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
   try {
     const body: RequestBody = await req.json();
 
