@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import * as bcrypt from 'bcrypt';
+import { signJwtAccessToken } from '@/lib/jwt';
 
 type RequestBody = {
   username: string;
@@ -27,8 +28,9 @@ export async function POST(req: Request) {
     }
 
     const { password, ...userWithoutPassword } = user;
-
-    return NextResponse.json(userWithoutPassword);
+    const accessToken = signJwtAccessToken(userWithoutPassword);
+    const result = { ...userWithoutPassword, accessToken };
+    return NextResponse.json(result);
   } catch (error) {
     return new NextResponse('Internal error', {
       status: 500,
