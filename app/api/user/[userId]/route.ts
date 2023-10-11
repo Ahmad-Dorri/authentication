@@ -1,4 +1,6 @@
+import { verifyJwt } from '@/lib/jwt';
 import prisma from '@/lib/prisma';
+
 import { NextResponse } from 'next/server';
 
 interface Params {
@@ -8,6 +10,24 @@ interface Params {
 }
 export async function GET(req: Request, { params }: Params) {
   try {
+    const accessToken = req.headers.get('Authorization');
+
+    if (!accessToken || !verifyJwt(accessToken)) {
+      return new NextResponse('Unauthorized', {
+        status: 401,
+      });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: +params.userId,
+      },
+    });
+
+    if (!user) {
+      return new NextResponse('Unauthorized', { status: 401 });
+    }
+
     const userPosts = await prisma.post.findMany({
       where: {
         authorId: +params.userId,
