@@ -9,7 +9,7 @@ const SigninButton = () => {
   if (session && session.user) {
     return (
       <button className="bg-rose-400 p-4" onClick={() => signOut()}>
-        LogOut from {session.user.name}
+        LogOut from <span className="text-violet-100">{session.user.name}</span>
       </button>
     );
   }
